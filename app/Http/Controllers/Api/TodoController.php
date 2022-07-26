@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Todo;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TodoResource;
 
 class TodoController extends Controller
 {
@@ -15,8 +16,7 @@ class TodoController extends Controller
      */
     public function index()
     {
-        $todos = Todo::all();
-        return $todos;
+        return TodoResource::collection(Todo::all());
     }
 
     /**
