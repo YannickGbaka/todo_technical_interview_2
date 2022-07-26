@@ -47,74 +47,54 @@
                                     </tr>
                                 </thead>
                                 <tbody class="">
-                                    @foreach ($todos as $todo)
+                                    <template x-for="todo in todos">
                                         <tr class="fw-normal">
 
                                             <td class="align-middle ">
                                                 <form action="{{ route('todos.change_state') }}" method="POST">
                                                     @csrf
                                                     <button type="submit" class="btn btn-outline-secondary"
-                                                        @if ($todo->state == true) checked @endif aria-label="...">
+                                                        aria-label="...">
                                                         <i class="fa-solid fa-check-double text-success"></i>
                                                     </button>
-                                                    @if ($todo->state == true)
-                                                        <s>{{ $todo->task }}</s>
-                                                    @else
-                                                        <span>{{ $todo->task }}</span>
-                                                    @endif
-                                                    <input type="hidden" name="task_id" value="{{ $todo->id }}">
+                                                    <template x-if="todo.state == 'Terminé'">
+                                                        <s x-text="todo.task"></s>
+                                                    </template>
+                                                    <template x-if="todo.state == 'En cours'">
+                                                        <span x-text="todo.task"></span>
+                                                    </template>
+                                                    <input type="hidden" name="task_id" :value="todo.id">
                                                 </form>
                                             </td>
                                             <td class="align-middle">
                                                 <h6 class="mb-0">
-                                                    <span
-                                                        class="badge badge-pill 
-                                                    @switch($todo->priority) @case('Elévé')
-                                                badge-danger
-                                                @break
-
-                                                @case('Moyenne')
-                                                badge-warning
-                                                @break
-
-                                                @case('Faible')
-                                                badge-info
-                                                        @break @endswitch">
-                                                        {{ $todo->priority }}
-                                                    </span>
+                                                    <span class="badge badge-pill" :class="getPriorityBadge(todo.priority)"
+                                                        x-text="todo.priority"></span>
                                                 </h6>
                                             </td>
                                             <td class="align-middle">
-                                                @if ($todo->state == true)
-                                                    <i class="fas fa-check text-success me-3"></i>
-                                                @else
-                                                    <i class="fas fa fa-spinner text-warning me-3"></i>
-                                                @endif
+                                                <i
+                                                    :class=" todo.state == 'Terminé' ? 'fas fa-check text-success' :
+                                                         'fas fa fa-spinner text-warning me-3'"></i>
                                             </td>
                                             <td class="align-middle">
-                                                <form method="POST" class="inline-block"
-                                                    action="{{ route('todos.delete', $todo->id) }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <a href="#!" data-toggle="modal" data-task="{{ $todo->task }}"
-                                                        data-priority="{{ $todo->priority }}"
-                                                        data-state="{{ $todo->state }}"
-                                                        data-task_id="{{ $todo->id }}" data-target="#modifyTodoModal"
-                                                        class="btn updateTodo" title="Done"><i
-                                                            class="fas fa-edit text-primary "></i></a>
-                                                    <button type="submit" title="Remove" class="btn"><i
-                                                            class="fas fa-trash-alt text-warning"></i></button>
-                                                </form>
+
+                                                <a href="#!" data-toggle="modal" :data-task="todo.task"
+                                                    :data-priority="todo.priority" :data-state="todo.state"
+                                                    :data-task_id="todo.id" data-target="#modifyTodoModal"
+                                                    class="btn updateTodo" title="Done"><i
+                                                        class="fas fa-edit text-primary "></i></a>
+                                                <button type="submit" title="Remove" class="btn"><i
+                                                        class="fas fa-trash-alt text-warning"></i></button>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    </template>
                                 </tbody>
                             </table>
                         </div>
 
                         <div class="card-footer text-end p-3">
-                            <button @click="fetch" class="btn btn-primary" data-toggle="modal"
-                                data-target="#addTodoModal">Ajouter
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#addTodoModal">Ajouter
                                 une tâche</button>
                         </div>
                     </div>
