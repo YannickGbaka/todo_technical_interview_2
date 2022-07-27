@@ -5191,6 +5191,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   todoCreated.state = todoCreated.state == 0 ? 'En cours' : 'Terminé';
 
                   _this3.$dispatch('creating', todoCreated);
+
+                  _this3.resetState();
+
+                  console.log('resetting');
                 }
 
               case 6:
@@ -5267,6 +5271,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee4);
       }))();
     },
+    completeTodo: function completeTodo(id) {
+      var _this6 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        var res, elementIndex;
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return axios__WEBPACK_IMPORTED_MODULE_0___default().patch("".concat(Alpine.store('globalTask').appUrl, "/api/todos/").concat(id, "/complete"));
+
+              case 2:
+                res = _context5.sent;
+
+                if (res.status == 201 || res.status == 200) {
+                  $('#modifyTodoModal').modal('hide');
+                  elementIndex = _this6.todos.findIndex(function (t) {
+                    return t.id == id;
+                  });
+
+                  _this6.$dispatch('updating', elementIndex);
+                }
+
+              case 4:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
+      }))();
+    },
     updateTodoElement: function updateTodoElement(todo) {
       var elementIndex = this.todos.findIndex(function (t) {
         return t.id == todo.id;
@@ -5304,9 +5340,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     },
     resetState: function resetState() {
-      this.task = null;
-      this.priority = null;
-      this.state = null;
+      this.task_create = null;
+      this.priority_create = 1;
     }
   };
 });

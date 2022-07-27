@@ -48,6 +48,7 @@
                                         state = $event.detail.state 
                                         task = $event.detail.task; 
                                         task_id = $event.detail.id;
+                                        todos[$event.detail].state = todos[$event.detail].state == 'En cours' ? 'Terminé' : 'En cours'
                                         updateTodoElement($event.detail); message.type='success' , message.display=true;
                                         message.content='La tâche a bien été mise à jour'">
                                     </template>
@@ -62,20 +63,17 @@
                                         <tr class="fw-normal">
 
                                             <td class="align-middle ">
-                                                <form action="{{ route('todos.change_state') }}" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-outline-secondary"
-                                                        aria-label="...">
-                                                        <i class="fa-solid fa-check-double text-success"></i>
-                                                    </button>
-                                                    <template x-if="todo.state == 'Terminé'">
-                                                        <s x-text="todo.task"></s>
-                                                    </template>
-                                                    <template x-if="todo.state == 'En cours'">
-                                                        <span x-text="todo.task"></span>
-                                                    </template>
-                                                    <input type="hidden" name="task_id" :value="todo.id">
-                                                </form>
+                                                <button @click.prevent="completeTodo(todo.id)" type="submit"
+                                                    class="btn btn-outline-secondary" aria-label="...">
+                                                    <i class="fa-solid fa-check-double text-success"></i>
+                                                </button>
+                                                <template x-if="todo.state == 'Terminé'">
+                                                    <s x-text="todo.task"></s>
+                                                </template>
+                                                <template x-if="todo.state == 'En cours'">
+                                                    <span x-text="todo.task"></span>
+                                                </template>
+                                                <input type="hidden" name="task_id" :value="todo.id">
                                             </td>
                                             <td class="align-middle">
                                                 <h6 class="mb-0">

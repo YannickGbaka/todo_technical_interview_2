@@ -51,7 +51,9 @@ export default ()=>({
             todoCreated.state = todoCreated.state == 0 ? 'En cours' : 'Terminé'
             
             this.$dispatch('creating', todoCreated)
-        }   
+            this.resetState();
+            console.log('resetting')
+        }  
 
     },
 
@@ -77,6 +79,16 @@ export default ()=>({
         if(res.status == 201 || res.status ==  200 ){
             $('#modifyTodoModal').modal('hide');
             this.$dispatch('deleting', id)
+        }
+    },
+
+    async completeTodo(id){
+
+        const res = await axios.patch(`${Alpine.store('globalTask').appUrl}/api/todos/${id}/complete`)
+        if(res.status == 201 || res.status ==  200 ){
+            $('#modifyTodoModal').modal('hide');
+            let elementIndex = this.todos.findIndex(t => t.id == id)
+            this.$dispatch('updating', elementIndex)
         }
     },
 
@@ -116,10 +128,9 @@ export default ()=>({
         }
     },
 
-    resetState(){
-        this.task = null;
-        this.priority = null;
-        this.state = null;
-    }
+        resetState(){
+            this.task_create = null;
+            this.priority_create = 1;
+        }
 
 });

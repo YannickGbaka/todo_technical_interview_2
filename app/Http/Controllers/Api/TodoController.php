@@ -118,20 +118,12 @@ class TodoController extends Controller
         return response()->json(['body' => $todo, 'message' => 'La tâche a bien été mis à jour']);
     }
 
-    public function completeTask(Request $request)
+    public function completeTask($id)
     {
-        $rules = [
-            'task_id' => 'required|int',
-        ];
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return $validator->errors();
-        }
-
-        $todo = Todo::findOrFail($request->task_id);
+        $todo = Todo::findOrFail($id);
         $todo->state = !$todo->state;
         $todo->save();
+        return $todo;
 
         return back()->with('task_updating', 'La tâche a été mise à jour avec succès');
     }
