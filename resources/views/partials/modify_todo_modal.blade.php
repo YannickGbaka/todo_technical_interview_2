@@ -1,4 +1,8 @@
-<div class="modal fade" id="modifyTodoModal" tabindex="-1" aria-labelledby="modifyTodoModalLabel" aria-hidden="true">
+<div x-data="todo" class="modal fade" id="modifyTodoModal" tabindex="-1" aria-labelledby="modifyTodoModalLabel"
+    aria-hidden="true">
+    <template
+        x-on:modal.window="task = $event.detail.task; priority = $event.detail.priority; state = $event.detail.state; task_id = $event.detail.id">
+    </template>
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -18,7 +22,8 @@
                                 <i class="fa fa-rectangle-list text-info"></i>
                             </div>
                         </div>
-                        <input type="text" name="task" required class="form-control" id="task_modified">
+                        <input type="text" name="task" x-model="task" required class="form-control"
+                            id="task_modified">
                     </div>
                     <label for="priority" class="col-form-label">Priorité:</label>
                     <div class="input-group">
@@ -27,10 +32,10 @@
                                 <i class="fa fa-scale-unbalanced-flip text-warning"></i>
                             </div>
                         </div>
-                        <select required class="form-control" name="priority" id="priority_modified">
-                            <option value="1">Elévé</option>
-                            <option value="2">Moyenne</option>
-                            <option value="3">Faible</option>
+                        <select x-model="priority" required class="form-control" name="priority" id="priority_modified">
+                            <option :selected="priority == 'Elévé'" value="1">Elévé</option>
+                            <option :selected="priority == 'Moyenne'" value="2">Moyenne</option>
+                            <option :selected="priority == 'Faible'" value="3">Faible</option>
                         </select>
                     </div>
                     <label for="priority" class="col-form-label">Etat:</label>
@@ -40,14 +45,14 @@
                                 <i class="fa-solid fa-spinner text-success"></i>
                             </div>
                         </div>
-                        <select required class="form-control" name="state" id="state_modified">
-                            <option value="1">Terminé</option>
-                            <option value="0">En cours</option>
+                        <select x-model="state" required class="form-control" name="state" id="state_modified">
+                            <option :selected="state == 'Terminé'" value="1">Terminé</option>
+                            <option :selected="state == 'En cours'" value="0">En cours</option>
                         </select>
                     </div>
-                    <input type="hidden" name="task_id" id="task_id">
+                    <input type="hidden" name="task_id" id="task_id" x-model="task_id">
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">
+                        <button @click.prevent="updateTodo()" class="btn btn-primary">
                             Modifer
                             <i class="fas fa-edit"></i> </button>
                     </div>

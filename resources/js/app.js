@@ -1,8 +1,13 @@
 require('./bootstrap');
-require('alpinejs')
+
+require('alpinejs');
 
 import Alpine from 'alpinejs'
+
+window.Alpine = Alpine
+
 import todo from './todo.js'
+
 
 Alpine.data('todo', todo)
 

@@ -1,9 +1,8 @@
 @extends('partials.main')
 
 @section('content')
-    <section class="vh-100" style="background-color: #eee;">
-        <div x-data="todo" class="container py-5 h-100">
-
+    <section x-data="todo" style="background-color: #eee;">
+        <div class="container py-5">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-md-12 col-xl-10">
                     <div class="card">
@@ -11,30 +10,14 @@
                         <div class="card-header p-3">
                             <h5 class="mb-0"><i class="fas fa-tasks me-2 mx-2"></i>Liste tâches à accomplir</h5>
                         </div>
-                        @if (Session::has('task_creation'))
-                            <div class="alert alert-success alert-dismissible fade show m-2" role="alert">
-                                <strong>Tâche crée 🎉</strong> {{ Session::get('task_creation') }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-                        @if (Session::has('task_updating'))
-                            <div class="alert alert-success alert-dismissible fade show m-2" role="alert">
-                                <strong>Tâche mise à jour 🎉</strong> {{ Session::get('task_updating') }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-                        @if (Session::has('task_deleted'))
-                            <div class="alert alert-success alert-dismissible fade show m-2" role="alert">
-                                <strong>Suppression de la tâche 🗑️</strong> {{ Session::get('task_deleted') }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
+
+                        <div x-show="message.display == true" class="alert alert-success alert-dismissible fade show m-2"
+                            role="alert">
+                            <strong x-text="' 🎉 ' + message.content + ' 🎉' "></strong>
+                            <button type="button" class="close" @click="message.display = false">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
 
                         <div class="card-body">
                             <table class="table mb-0">
@@ -47,7 +30,25 @@
                                     </tr>
                                 </thead>
                                 <tbody class="">
-                                    <template x-for="todo in todos">
+                                    <template
+                                        x-on:creating.window="
+                                        todos = [...todos, $event.detail]; 
+                                        message.type = 'success',
+                                        message.display = true;
+                                        message.content = 'La tâche a été crée avec succès'
+                                        ">
+                                    </template>
+                                    <template
+                                        x-on:updating.window="
+                                        priority = $event.detail.priority;
+                                        state = $event.detail.state 
+                                        task = $event.detail.task; 
+                                        task_id = $event.detail.id;
+                                        updateTodoElement($event.detail); message.type='success' , message.display=true;
+                                        message.content='La tâche a bien été mise à jour'">
+                                    </template>
+                                    <template x-for="todo
+                                        in todos">
                                         <tr class="fw-normal">
 
                                             <td class="align-middle ">
@@ -79,10 +80,9 @@
                                             </td>
                                             <td class="align-middle">
 
-                                                <a href="#!" data-toggle="modal" :data-task="todo.task"
-                                                    :data-priority="todo.priority" :data-state="todo.state"
-                                                    :data-task_id="todo.id" data-target="#modifyTodoModal"
-                                                    class="btn updateTodo" title="Done"><i
+                                                <a href="#!" data-toggle="modal" :data-task_id="todo.id"
+                                                    data-target="#modifyTodoModal" class="btn updateTodo"
+                                                    @click="$dispatch('modal', {...todo})" title="Done"><i
                                                         class="fas fa-edit text-primary "></i></a>
                                                 <button type="submit" title="Remove" class="btn"><i
                                                         class="fas fa-trash-alt text-warning"></i></button>

@@ -38,12 +38,13 @@ class TodoController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        Todo::create([
+        $todo = Todo::create([
             'task' => $request->task,
+            'state' => 0,
             'priority' => $request->priority
         ]);
 
-        return response()->json(['body' => 'La tâche a bien été crée']);
+        return response()->json(['body' => $todo, 'message' => 'Tâche crée avec succès']);
     }
 
     /**
@@ -65,7 +66,8 @@ class TodoController extends Controller
      */
     public function show($id)
     {
-        //
+        $todo = Todo::findOrFail($id);
+        return response()->json($todo, 201);
     }
 
     /**
@@ -77,10 +79,9 @@ class TodoController extends Controller
     public function edit($id, Request $request)
     {
         $rules = [
-            'task_id' => 'required',
+            'id' => 'required',
             'task' => 'required|string|min:3',
             'priority' => 'required',
-            'state' => 'required|min:0|max:1'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -89,14 +90,32 @@ class TodoController extends Controller
             return response()->json($validator->errors(), 401);
         }
 
-        $todo = Todo::findOrFail($request->task_id);
+        $todo = Todo::findOrFail($request->id);
         $todo->task = $request->task;
-        $todo->priority = $request->priority;
-        $todo->state = $request->state;
+        if ($request->priority == 'Elévé' || $request->priority == 'Moyenne' || $request->priority == 'Faible') {
+            switch ($request->priority) {
+                case 'Elévé':
+                    $todo->priority = 1;
+                    break;
+                case 'Moyenne':
+                    $todo->priority = 2;
+                    break;
+                case 'Faible':
+                    $todo->priority = 3;
+                    break;
+            }
+        } else {
+            $todo->priority = $request->priority;
+        }
+        if ($request->state == 'Terminé' || $request->state == 'En cours') {
+            $todo->state = $todo->state;
+        } else {
+            $todo->state = $request->state;
+        }
 
         $todo->save();
 
-        return response()->json(['body' => 'La tâche a bien été mis à jour']);
+        return response()->json(['body' => $todo, 'message' => 'La tâche a bien été mis à jour']);
     }
 
     public function completeTask(Request $request)

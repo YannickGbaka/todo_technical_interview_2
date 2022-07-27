@@ -1,4 +1,5 @@
-<div class="modal fade" id="addTodoModal" tabindex="-1" aria-labelledby="addTodoModalLabel" aria-hidden="true">
+<div x-data="todo" class="modal fade" id="addTodoModal" tabindex="-1" aria-labelledby="addTodoModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -17,7 +18,8 @@
                                 <i class="fa fa-rectangle-list text-info"></i>
                             </div>
                         </div>
-                        <input type="text" name="task" required class="form-control" id="task">
+                        <input type="text" x-model="task_create" name="task" required class="form-control"
+                            id="task">
                     </div>
                     <label for="priority" class="col-form-label">Priorité:</label>
                     <div class="input-group">
@@ -26,14 +28,14 @@
                                 <i class="fa fa-scale-unbalanced-flip text-warning"></i>
                             </div>
                         </div>
-                        <select required class="form-control" name="priority" id="priority">
+                        <select x-model="priority_create" required class="form-control" name="priority" id="priority">
                             <option value="1">Elévé</option>
                             <option value="2">Moyenne</option>
                             <option value="3">Faible</option>
                         </select>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">
+                        <button @click.prevent="createTodo();" class="btn btn-primary">
                             Créer
                             <i class="fa-solid fa-square-plus"></i> </button>
                     </div>
