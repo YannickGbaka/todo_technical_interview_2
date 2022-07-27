@@ -5040,6 +5040,9 @@ __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js"
 
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 
+alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].store('globalTask', {
+  appUrl: "http://localhost:8000"
+});
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].data('todo', _todo_js__WEBPACK_IMPORTED_MODULE_1__["default"]);
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
 
@@ -5147,7 +5150,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default().get('http://localhost:8000/api/todos');
+                return axios__WEBPACK_IMPORTED_MODULE_0___default().get("".concat(Alpine.store('globalTask').appUrl, "/api/todos"));
 
               case 2:
                 res = _context.sent;
@@ -5177,7 +5180,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   'state': _this3.state
                 };
                 _context2.next = 4;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default().post('http://localhost:8000/api/todos', todo);
+                return axios__WEBPACK_IMPORTED_MODULE_0___default().post("".concat(Alpine.store('globalTask').appUrl, "/api/todos"), todo);
 
               case 4:
                 res = _context2.sent;
@@ -5214,7 +5217,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   'state': _this4.state
                 };
                 _context3.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default().put('http://localhost:8000/api/todos/' + _this4.task_id, todo);
+                return axios__WEBPACK_IMPORTED_MODULE_0___default().put("".concat(Alpine.store('globalTask').appUrl, "/api/todos/").concat(_this4.task_id), todo);
 
               case 3:
                 res = _context3.sent;
@@ -5245,7 +5248,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context4.prev = _context4.next) {
               case 0:
                 _context4.next = 2;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]('http://localhost:8000/api/todos/' + id);
+                return axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("".concat(Alpine.store('globalTask').appUrl, "/api/todos/").concat(id));
 
               case 2:
                 res = _context4.sent;

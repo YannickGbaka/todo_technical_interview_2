@@ -30,7 +30,7 @@ export default ()=>({
     },
     
     async fetchTodos(){
-        const res = await axios.get('http://localhost:8000/api/todos');
+        const res = await axios.get(`${Alpine.store('globalTask').appUrl}/api/todos`);
         this.todos = [... res.data.data];
     },
 
@@ -44,7 +44,7 @@ export default ()=>({
             'priority' : this.priority_create,
             'state' : this.state,
         }
-        const res = await axios.post('http://localhost:8000/api/todos', todo)
+        const res = await axios.post(`${Alpine.store('globalTask').appUrl}/api/todos`, todo)
         if(res.status == 201 || res.status ==  200 ){
             $('#addTodoModal').modal('hide');
             const todoCreated = res.data.body
@@ -62,7 +62,7 @@ export default ()=>({
             'priority' :this.priority,
             'state' : this.state,
         }
-        const res = await axios.put('http://localhost:8000/api/todos/'+this.task_id, todo)
+        const res = await axios.put(`${Alpine.store('globalTask').appUrl}/api/todos/${this.task_id}`, todo)
         if(res.status == 201 || res.status ==  200 ){
             $('#modifyTodoModal').modal('hide');
             const todoUpdated = res.data.body
@@ -73,7 +73,7 @@ export default ()=>({
     },
 
     async deleteTodo(id){
-        const res = await axios.delete('http://localhost:8000/api/todos/'+id)
+        const res = await axios.delete(`${Alpine.store('globalTask').appUrl}/api/todos/${id}`)
         if(res.status == 201 || res.status ==  200 ){
             $('#modifyTodoModal').modal('hide');
             this.$dispatch('deleting', id)
