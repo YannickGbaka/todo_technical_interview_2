@@ -5117,6 +5117,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     task: null,
     priority: null,
     state: null,
+    search: '',
     task_create: null,
     priority_create: 1,
     message: {
@@ -5127,8 +5128,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     init: function init() {
       this.fetchTodos();
     },
-    fetchTodos: function fetchTodos() {
+
+    get filteredTodo() {
       var _this = this;
+
+      return this.todos.filter(function (todo) {
+        return todo.task.toLocaleLowerCase().includes(_this.search.toLocaleLowerCase());
+      });
+    },
+
+    fetchTodos: function fetchTodos() {
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
         var res;
@@ -5141,7 +5151,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 2:
                 res = _context.sent;
-                _this.todos = _toConsumableArray(res.data.data);
+                _this2.todos = _toConsumableArray(res.data.data);
 
               case 4:
               case "end":
@@ -5152,7 +5162,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     createTodo: function createTodo() {
-      var _this2 = this;
+      var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
         var todo, res, todoCreated;
@@ -5160,11 +5170,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                console.log(_this2.todos.length);
+                console.log(_this3.todos.length);
                 todo = {
-                  'task': _this2.task_create,
-                  'priority': _this2.priority_create,
-                  'state': _this2.state
+                  'task': _this3.task_create,
+                  'priority': _this3.priority_create,
+                  'state': _this3.state
                 };
                 _context2.next = 4;
                 return axios__WEBPACK_IMPORTED_MODULE_0___default().post('http://localhost:8000/api/todos', todo);
@@ -5174,14 +5184,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 if (res.status == 201 || res.status == 200) {
                   $('#addTodoModal').modal('hide');
+                  todoCreated = res.data.body;
+                  todoCreated.state = todoCreated.state == 0 ? 'En cours' : 'Terminé';
+
+                  _this3.$dispatch('creating', todoCreated);
                 }
 
-                todoCreated = res.data.body;
-                todoCreated.state = todoCreated.state == 0 ? 'En cours' : 'Terminé';
-
-                _this2.$dispatch('creating', todoCreated);
-
-              case 9:
+              case 6:
               case "end":
                 return _context2.stop();
             }
@@ -5190,7 +5199,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     updateTodo: function updateTodo() {
-      var _this3 = this;
+      var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
         var todo, res, todoUpdated;
@@ -5199,27 +5208,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context3.prev = _context3.next) {
               case 0:
                 todo = {
-                  'id': _this3.task_id,
-                  'task': _this3.task,
-                  'priority': _this3.priority,
-                  'state': _this3.state
+                  'id': _this4.task_id,
+                  'task': _this4.task,
+                  'priority': _this4.priority,
+                  'state': _this4.state
                 };
                 _context3.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default().put('http://localhost:8000/api/todos/' + _this3.task_id, todo);
+                return axios__WEBPACK_IMPORTED_MODULE_0___default().put('http://localhost:8000/api/todos/' + _this4.task_id, todo);
 
               case 3:
                 res = _context3.sent;
 
                 if (res.status == 201 || res.status == 200) {
                   $('#modifyTodoModal').modal('hide');
+                  todoUpdated = res.data.body;
+                  todoUpdated.state = todoUpdated.state == 0 ? 'En cours' : 'Terminé';
+
+                  _this4.$dispatch('updating', todoUpdated);
                 }
 
-                todoUpdated = res.data.body;
-                todoUpdated.state = todoUpdated.state == 0 ? 'En cours' : 'Terminé';
-
-                _this3.$dispatch('updating', todoUpdated);
-
-              case 8:
+              case 5:
               case "end":
                 return _context3.stop();
             }
@@ -5227,11 +5235,46 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee3);
       }))();
     },
+    deleteTodo: function deleteTodo(id) {
+      var _this5 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        var res;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]('http://localhost:8000/api/todos/' + id);
+
+              case 2:
+                res = _context4.sent;
+
+                if (res.status == 201 || res.status == 200) {
+                  $('#modifyTodoModal').modal('hide');
+
+                  _this5.$dispatch('deleting', id);
+                }
+
+              case 4:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
     updateTodoElement: function updateTodoElement(todo) {
       var elementIndex = this.todos.findIndex(function (t) {
         return t.id == todo.id;
       });
       this.todos[elementIndex] = todo;
+    },
+    deleteTodoElement: function deleteTodoElement(id) {
+      var elementIndex = this.todos.findIndex(function (t) {
+        return t.id == id;
+      });
+      this.todos.splice(elementIndex, 1);
     },
     getPriorityBadge: function getPriorityBadge(priority) {
       switch (priority) {

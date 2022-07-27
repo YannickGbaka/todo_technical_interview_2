@@ -154,9 +154,9 @@ class TodoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $todo = Todo::findOrFail($request->id);
+        $todo = Todo::findOrFail($id);
         $todo->delete();
 
         return response()->json(['body' => 'Tâche supprimé avec succès']);

@@ -7,6 +7,7 @@ export default ()=>({
     task: null,
     priority: null,
     state : null,
+    search: '',
 
     task_create: null,
     priority_create: 1,
@@ -20,6 +21,12 @@ export default ()=>({
 
     init(){
         this.fetchTodos()
+    },
+
+    get filteredTodo() {
+        return this.todos.filter(
+            todo => todo.task.toLocaleLowerCase().includes(this.search.toLocaleLowerCase())
+        )
     },
     
     async fetchTodos(){
@@ -40,11 +47,11 @@ export default ()=>({
         const res = await axios.post('http://localhost:8000/api/todos', todo)
         if(res.status == 201 || res.status ==  200 ){
             $('#addTodoModal').modal('hide');
+            const todoCreated = res.data.body
+            todoCreated.state = todoCreated.state == 0 ? 'En cours' : 'Terminé'
+            
+            this.$dispatch('creating', todoCreated)
         }   
-        const todoCreated = res.data.body
-        todoCreated.state = todoCreated.state == 0 ? 'En cours' : 'Terminé'
-        
-        this.$dispatch('creating', todoCreated)
 
     },
 
@@ -58,16 +65,29 @@ export default ()=>({
         const res = await axios.put('http://localhost:8000/api/todos/'+this.task_id, todo)
         if(res.status == 201 || res.status ==  200 ){
             $('#modifyTodoModal').modal('hide');
+            const todoUpdated = res.data.body
+            todoUpdated.state = todoUpdated.state == 0 ? 'En cours' : 'Terminé'
+    
+            this.$dispatch('updating', todoUpdated)
         }
-        const todoUpdated = res.data.body
-        todoUpdated.state = todoUpdated.state == 0 ? 'En cours' : 'Terminé'
+    },
 
-        this.$dispatch('updating', todoUpdated)
+    async deleteTodo(id){
+        const res = await axios.delete('http://localhost:8000/api/todos/'+id)
+        if(res.status == 201 || res.status ==  200 ){
+            $('#modifyTodoModal').modal('hide');
+            this.$dispatch('deleting', id)
+        }
     },
 
     updateTodoElement(todo){
         let elementIndex = this.todos.findIndex(t => t.id == todo.id)
         this.todos[elementIndex] = todo
+    },
+
+    deleteTodoElement(id){
+        let elementIndex = this.todos.findIndex(t => t.id == id)
+        this.todos.splice(elementIndex, 1);
     },
 
     getPriorityBadge(priority){

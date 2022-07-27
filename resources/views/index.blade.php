@@ -20,6 +20,10 @@
                         </div>
 
                         <div class="card-body">
+                            <div class="form-outline flex-fill m-4 w-80">
+                                <label class="form-label" for="form2">Rechercher tâche</label>
+                                <input x-model="search" type="text" id="form2" class="form-control bg bg-light" />
+                            </div>
                             <table class="table mb-0">
                                 <thead>
                                     <tr>
@@ -47,8 +51,14 @@
                                         updateTodoElement($event.detail); message.type='success' , message.display=true;
                                         message.content='La tâche a bien été mise à jour'">
                                     </template>
+                                    <template
+                                        x-on:deleting.window="
+                                        deleteTodoElement($event.detail)
+                                        message.type='success', message.display=true;
+                                        message.content='La tâche a bien été Supprimé'">
+                                    </template>
                                     <template x-for="todo
-                                        in todos">
+                                        in filteredTodo">
                                         <tr class="fw-normal">
 
                                             <td class="align-middle ">
@@ -84,8 +94,8 @@
                                                     data-target="#modifyTodoModal" class="btn updateTodo"
                                                     @click="$dispatch('modal', {...todo})" title="Done"><i
                                                         class="fas fa-edit text-primary "></i></a>
-                                                <button type="submit" title="Remove" class="btn"><i
-                                                        class="fas fa-trash-alt text-warning"></i></button>
+                                                <button type="submit" @click="deleteTodo(todo.id)" title="Remove"
+                                                    class="btn"><i class="fas fa-trash-alt text-warning"></i></button>
                                             </td>
                                         </tr>
                                     </template>
