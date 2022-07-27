@@ -5292,7 +5292,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     return t.id == id;
                   });
 
-                  _this6.$dispatch('updating', elementIndex);
+                  _this6.$dispatch('updatingState', elementIndex);
                 }
 
               case 4:

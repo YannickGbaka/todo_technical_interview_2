@@ -88,7 +88,7 @@ export default ()=>({
         if(res.status == 201 || res.status ==  200 ){
             $('#modifyTodoModal').modal('hide');
             let elementIndex = this.todos.findIndex(t => t.id == id)
-            this.$dispatch('updating', elementIndex)
+            this.$dispatch('updatingState', elementIndex)
         }
     },
 

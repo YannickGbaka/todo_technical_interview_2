@@ -43,12 +43,18 @@
                                         ">
                                     </template>
                                     <template
+                                        x-on:updatingState.window="
+                                        todos[$event.detail].state = todos[$event.detail].state == 'En cours' ? 'Terminé' : 'En cours'
+                                         message.type='success' , message.display=true;
+                                        message.content='L\'état de la tâche a bien été modifié'
+                                        ">
+                                    </template>
+                                    <template
                                         x-on:updating.window="
                                         priority = $event.detail.priority;
                                         state = $event.detail.state 
                                         task = $event.detail.task; 
                                         task_id = $event.detail.id;
-                                        todos[$event.detail].state = todos[$event.detail].state == 'En cours' ? 'Terminé' : 'En cours'
                                         updateTodoElement($event.detail); message.type='success' , message.display=true;
                                         message.content='La tâche a bien été mise à jour'">
                                     </template>
